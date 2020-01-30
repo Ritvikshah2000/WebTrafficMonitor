@@ -1,6 +1,6 @@
 # main entry point and contains server-side code
 from flask import Flask, render_template, request, session, jsonify
-import urlib.request
+import urllib.request 
 from pusher import Pusher
 from datetime import datetime
 import httpagentparser
@@ -20,7 +20,7 @@ app.secret_key = os.urandom(24) #generates a secret key automatically
 pusher = Pusher(
 app_id = os.environ.get('PUSHER_APP_ID'),
 key = os.environ.get('PUSHER_APP_KEY'),
-secret = ('PUSHER_APP_SECRET'),
+secret = os.environ.get('PUSHER_APP_SECRET'),
 cluster = os.environ.get('PUSHER_APP_CLUSTER'),
 ssl = True)
 
@@ -52,7 +52,7 @@ def parseVisitor(data):
 @app.before_request
 def getAnalyticsData(): #this function gets visitor's IP address and retreieves data using urlib module
     global userOS, userBrowser, userIP, userContinent, userCity, userCountry, sessionID
-    userInfo = httpagentparset.detect(request.headers.get('User-Agent'))
+    userInfo = httpagentparser.detect(request.headers.get('User-Agent'))
     userOS = userInfo['platform']['name']
     userIP = "72.229.28.185" if request.remote_addr == '127.0.0.1' else request.remote_addr
     api = "https://www.iplocate.io/api/lookup/" + userIP
@@ -73,16 +73,16 @@ def getSession():
     time = datetime.now().replace(microsecond=0)
     if 'user' not in session:
         lines = (str(time)+userIP).encode('utf-8')
-        session['user'] = haslib.md5(lines).hexdigest()
+        session['user'] = hashlib.md5(lines).hexdigest()
         sessionID = session['user']
         pusher.trigger(u'session', u'new', {
             u'ip': userIP,
-            u'continent': userContinent
-            u'country' : userCountry
-            u'city' : userCity
-            u'os' : userOS
-            u'browser' : userBrowser
-            u'session' : sessionID
+            u'continent': userContinent,
+            u'country' : userCountry,
+            u'city' : userCity,
+            u'os' : userOS,
+            u'browser' : userBrowser,
+            u'session' : sessionID,
             u'time' : str(time),
         })
         data = [userIP, userContinent, userCountry, userCity, userOS, userBrowser, sessionID, time]
