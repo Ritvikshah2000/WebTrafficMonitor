@@ -81,7 +81,7 @@ def main(): #create tables using SQL commands
             os varchar(225) NOT NULL, 
             browser varchar(225) NOT NULL, 
             session varchar(225) NOT NULL,
-            created_at datetime NOT NULL
+            created_at datetime NOT NULL,
         ); 
     """
     

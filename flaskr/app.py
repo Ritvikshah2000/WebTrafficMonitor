@@ -104,13 +104,13 @@ def dashboard():
 
 @app.route('/dashboard/<session_id>', methods=['GET'])
 def sessionPages(session_id):
-    result = select_all_user_visits(c,session_id)
+    result = allUserVisits(c,session_id)
     return render_template("dashboard-single.html",data=result)
 
 @app.route('/get-all-sessions')
 def get_all_sessions():
     data = []
-    dbRows = select_all_sessions(c)
+    dbRows = allSessions(c)
     for row in dbRows:
         data.append({
             'ip' : row['ip'],
